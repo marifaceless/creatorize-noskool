@@ -23,9 +23,13 @@ for r in json.load(sys.stdin):
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)
     TAG=$(latest_tag) || true
-    printf '\nWindows: this build installs with the Setup.exe, not a shell script.\n'
-    if [ -n "${TAG:-}" ]; then printf '  https://github.com/%s/releases/download/%s/Creatorize-Suite-Setup-%s.exe\n\n' "$REPO" "$TAG" "${TAG#v}"
-    else printf '  https://github.com/%s/releases/latest\n\n' "$REPO"; fi
+    printf '\nWindows: paste this into PowerShell (or double-click the Setup.exe from Assets):\n\n'
+    if [ -n "${TAG:-}" ]; then
+      printf '  irm https://raw.githubusercontent.com/%s/main/install.ps1 | iex\n\n' "$REPO"
+      printf '  (the direct installer: https://github.com/%s/releases/download/%s/Creatorize-Suite-Setup-%s.exe)\n' "$REPO" "$TAG" "${TAG#v}"
+    else
+      printf '  irm https://raw.githubusercontent.com/%s/main/install.ps1 | iex\n\n' "$REPO"
+    fi
     printf '%sWindows may warn that the app is unsigned: More info > Run anyway.%s\n' "$dim" "$off"
     printf 'It updates itself from then on. Your own Claude account is still needed inside the app.\n'
     exit 0 ;;
