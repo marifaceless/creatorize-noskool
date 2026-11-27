@@ -87,8 +87,14 @@ EB="$WORK/eb"; mkdir -p "$EB"
 cp "$HERE/installer/eb-package.json" "$EB/package.json"
 [ -f "$WORK/wu/resources/resources/icon.ico" ] || { echo "no icon.ico in the app — put one next to this script as installer/eb-icon.ico"; exit 1; }
 cp "$WORK/wu/resources/resources/icon.ico" "$EB/icon.ico"
-(cd "$EB" && npx --yes electron-builder@26 --win nsis --prepackaged "$WORK/wu" -c.electronVersion=44.4.5 >/dev/null 2>&1) \
-  || { echo "electron-builder failed — publish the portable zip + latest.yml anyway (Windows friends then update by hand)"; }
+node -e '
+const { readFileSync, writeFileSync } = require("node:fs");
+const p = process.argv[1], v = process.argv[2];
+const j = JSON.parse(readFileSync(p, "utf8")); j.version = v;
+writeFileSync(p, JSON.stringify(j, null, 2) + "\n");
+' "$EB/package.json" "$VER"
+(cd "$EB" && npx --yes electron-builder@26 --win nsis --prepackaged "$WORK/wu" -c.electronVersion=44.4.5 > "$EB/eb.log" 2>&1) \
+  || { echo "electron-builder failed (last lines):"; tail -6 "$EB/eb.log"; echo "— publish the portable zip + latest.yml anyway (Windows friends then update by hand)"; }
 SETUP="$EB/dist/Creatorize-Suite-Setup-$VER.exe"
 [ -f "$SETUP" ] || { echo "no Setup.exe was built"; exit 1; }
 
