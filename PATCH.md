@@ -39,7 +39,15 @@ behaviour back at runtime):
 | `runSkoolGate()` resolves at once → no gate window ever | `runSkoolGate` |
 | `updatable()` → off + no launcher (only with `--no-updates`) | `updatable`, `ensureLauncher` |
 | start breadcrumb in `$TMPDIR/creatorize-no-skool-start.log` (triage) | before `PRIMARY` |
-| settings text, plan badge, premium messages say what this copy is | renderer bundle |
+| settings text, plan badge, premium messages say what this copy is | renderer bundle(s) |
+
+From 0.28 the renderer is split into ~90 chunk files instead of one `index-<hash>.js`; the patcher
+searches every chunk for each anchor (and, on a re-run, for its own marker first). The three cop
+strings have survived every version so far.
+
+From 0.30 `doCheck` is called `doCheck$1` with different locals — the anchor is the function
+signature alone, nothing inside it, so it survives that kind of churn. Tested against 0.20.1, 0.27.0
+and 0.30.15 (the last one also installs and runs as Premium, not just patches).
 
 Dead code stays below each anchor (the original body is still there) — that is
 deliberate, it keeps the diff small and reviewable.

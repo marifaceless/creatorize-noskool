@@ -55,10 +55,7 @@ const edits = [
     patch: "if (SKOOL_OFF) return { offline: false, online: true",
     variants: [
       // 0.27.x calls it doCheck$1 (the updater has its own doCheck); 0.20.x calls it doCheck
-      {
-        find: /^async function doCheck\$1\(\) \{\n  const at = [^\n]*keep = presenceOn,[^\n]*\n/m,
-        replace: (m) => m + FAKE_CHECK,
-      },
+      { find: /^async function doCheck\$1\(\) \{\n/m, replace: (m) => m + FAKE_CHECK },
       {
         find: /^async function doCheck\(\) \{\n  const at = [^\n]*keep = presenceOn;\n/m,
         replace: (m) => m + FAKE_CHECK,
@@ -143,13 +140,14 @@ console.log(`main process (${MAIN()})`);
 for (const e of edits) patchOne(e, e.file());
 
 const assets = join(dir, "out/renderer/assets");
-const renderer = readdirSync(assets).find((n) => /^index-[\w-]+\.js$/.test(n));
-if (!renderer) {
-  console.error("  ! no renderer bundle (index-<hash>.js) found");
-  failures.push("renderer bundle");
+// 0.20-0.27 keep one index-<hash>.js; 0.28+ split into many chunks, so search all of them
+const renderer = readdirSync(assets).filter((n) => n.endsWith(".js"));
+if (!renderer.length) {
+  console.error("  ! no renderer chunk with the Skool copy found");
+  failures.push("renderer chunks");
 } else {
-  const file = join(assets, renderer);
-  console.log(`renderer (${renderer})`);
+  const file = join(assets, renderer[0]);
+  console.log(`renderer (${renderer.join(", ")})`);
   const rendererEdits = [
     {
       label: "settings: the Skool page is never opened",
@@ -186,8 +184,13 @@ if (!renderer) {
     },
   ];
   for (const e of rendererEdits) {
-    e.file = () => file;
-    patchOne(e, file);
+    const read = (n) => readFileSync(join(assets, n), "utf8");
+    // already patched? find it by the marker, else by the anchor
+    const hit =
+      renderer.find((n) => read(n).includes(e.patch)) ??
+      renderer.find((n) => read(n).includes(e.variants[0].find)) ??
+      renderer[0];
+    patchOne(e, join(assets, hit));
   }
 }
 
