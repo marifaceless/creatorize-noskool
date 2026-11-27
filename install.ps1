@@ -17,7 +17,9 @@ function Say($m) { Write-Host $m }
 function Die($m) { Write-Host ''; Write-Host "Stopped: $m" -ForegroundColor Red; Write-Host ''; throw $m }
 
 try {
-  if (-not $IsWindows) { Die 'this is the Windows installer. On macOS use get.sh instead.' }
+  # works on both Windows PowerShell 5.1 and 7: $IsWindows does not exist in 5.1
+  $IsWin = ($env:OS -eq 'Windows_NT')
+  if (-not $IsWin) { Die 'this is the Windows installer. On macOS use get.sh instead.' }
   if (-not [Environment]::Is64BitOperatingSystem) { Die 'this build is for 64-bit Windows.' }
 
   $headers = @{ 'accept' = 'application/vnd.github+json'; 'user-agent' = 'creatorize-noskool' }
@@ -59,7 +61,7 @@ try {
   Say 'checksum ok'
 
   Unblock-File -Path $setup
-  if (-not $IsWindows) { Say 'checksum ok — install steps skipped (not running on Windows)'; return }
+  if (-not $IsWin) { Say 'checksum ok — install steps skipped (not running on Windows)'; return }
 
   $running = Get-Process -Name 'Creatorize Suite' -ErrorAction SilentlyContinue
   if ($running) { Say 'closing Creatorize Suite ...'; $running | Stop-Process -Force; Start-Sleep -Seconds 2 }
