@@ -71,7 +71,7 @@ printf 'owner: %s\nrepo: %s\nprovider: github\nreleaseType: release\nupdaterCach
 echo "==> keep the app's file list honest (size + sha256 of the two files we replaced)"
 node -e '
 const { createHash } = require("node:crypto"), { readFileSync, writeFileSync, statSync } = require("node:fs");
-const res = process.argv[2];
+const res = process.argv[1];
 const j = JSON.parse(readFileSync(`${res}/files.json`, "utf8"));
 for (const f of j.files) {
   if (f.path.endsWith("app.asar") || f.path.endsWith("app-update.yml")) {
