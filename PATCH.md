@@ -78,6 +78,13 @@ Ad hoc is enough; the original was ad hoc too. Nothing is notarised, so the
 quarantine flag has to go — `Install Creatorize Suite.command` does that, and
 README.txt tells the friend about the right-click → Open fallback.
 
+## The version lives in two places
+
+`app.getVersion()` prefers `version` in `package.json` **inside the asar** and only falls back to
+`CFBundleShortVersionString`. Miss it and the build reports the old version forever: every check
+re-offers the same release and nothing converges. `build.sh` stamps both from the app's plist
+version — never bump one by hand.
+
 ## On a new upstream version
 
 `apply.mjs` exits 1 and prints the anchor it could not find. Open

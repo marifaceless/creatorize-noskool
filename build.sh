@@ -45,6 +45,16 @@ npx --yes @electron/asar extract "$RES/app.asar" "$WORK/x"
 echo "==> patch (every anchor must match; adjust apply.mjs on a new upstream version)"
 if [ "$UPDATES" = 1 ]; then node "$HERE/apply.mjs" "$WORK/x"; else node "$HERE/apply.mjs" "$WORK/x" --no-updates; fi
 
+echo "==> stamp the version where Electron actually reads it (app.getVersion prefers the asar's package.json)"
+node -e '
+const { readFileSync, writeFileSync } = require("node:fs");
+const p = process.argv[1], v = process.argv[2];
+const j = JSON.parse(readFileSync(p, "utf8"));
+j.version = v;
+writeFileSync(p, JSON.stringify(j, null, 2) + "\n");
+console.log(`    package.json -> ${j.version}`);
+' "$WORK/x/package.json" "$VER"
+
 echo "==> repack"
 npx --yes @electron/asar pack "$WORK/x" "$RES/app.asar"
 rm -rf "$WORK/x"
