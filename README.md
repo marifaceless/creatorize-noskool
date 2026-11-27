@@ -11,11 +11,15 @@ with Premium unlocked, and never asks for a Skool account.
 
 ## Install
 
-1. Download the latest release: **Creatorize-Suite-…-mac-arm64.zip** (Assets).
-2. Unzip, double-click `Install Creatorize Suite.command` (Terminal opens; Mac password if it asks).
-3. If macOS says the app cannot be verified, once: Done → System Settings → Privacy & Security → Open Anyway.
+One line in Terminal:
 
-`installer/` in this repo holds copies of the same installer and a longer README if a release asset is missing.
+```bash
+curl -fsSL https://raw.githubusercontent.com/marifaceless/creatorize-noskool/main/get.sh | bash
+```
+
+It downloads the newest release, checks it against the release's sha256, and installs it
+(Mac password if it asks). Or by hand: Assets → `Creatorize-Suite-…-mac-arm64.zip` → unzip →
+`Install Creatorize Suite.command` → if macOS complains once: Done → Privacy & Security → Open Anyway.
 
 Requirements: macOS 12+, Apple Silicon, internet, your own Claude account.
 

@@ -9,7 +9,7 @@
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 
-APP_SRC="Creatorize Suite.app"
+APP_SRC="${CZ_APP_SRC:-Creatorize Suite.app}"
 APP_DST="/Applications/Creatorize Suite.app"
 LAUNCHER="/Applications/Creatorize Launcher.app"
 
@@ -17,12 +17,13 @@ bold=$(printf '\033[1m'); dim=$(printf '\033[2m'); green=$(printf '\033[32m'); y
 say() { printf '\n%s%s%s\n' "$bold" "$1" "$off"; }
 ok() { printf '  %s[ok]%s %s\n' "$green" "$off" "$1"; }
 warn() { printf '  %s[!]%s %s\n' "$yellow" "$off" "$1"; }
-die() { printf '\n%sStopped:%s %s\n\n' "$red" "$off" "$1"; printf 'Press Return to close.\n'; read -r _; exit 1; }
+pause() { [ -n "${CZ_NO_PAUSE:-}" ] || { printf '\nPress Return to close.\n'; read -r _; }; }
+die() { printf '\n%sStopped:%s %s\n\n' "$red" "$off" "$1"; pause; exit 1; }
 
 printf '%sCreatorize Suite — install (no Skool login)%s\n' "$bold" "$off"
 printf '%sThis copy runs as Premium and never asks you to sign in to Skool. You still sign in with your own Claude Code account inside the app: that is what makes the videos.%s\n' "$dim" "$off"
 
-[ -d "$APP_SRC" ] || die "“$APP_SRC” is not next to this script. Unzip the download again and double-click the file inside the folder."
+[ -d "$APP_SRC" ] || [ -n "${CZ_APP_SRC:-}" ] || die "“$APP_SRC” is not next to this script. Unzip the download again and double-click the file inside the folder."
 
 [ "$(uname -s)" = "Darwin" ] || die "this is a macOS build."
 [ "$(uname -m)" = "arm64" ] || die "this build is for Apple Silicon Macs (M1 and newer). Ask for the Intel copy."
@@ -85,5 +86,4 @@ printf '\n%sdone.%s It opens on Home, Premium unlocked, no sign-in.\n' "$green" 
 printf '%sNext: on the Home page follow “Getting started” — sign in with your own Claude account and let it install the tools it needs (git, ffmpeg, Python).%s\n' "$dim" "$off"
 printf '%sIf macOS says "Apple could not verify Creatorize Suite" (only on the first start after this): click Done, then System Settings > Privacy & Security > scroll down > Open Anyway, and enter your Mac password.%s\n' "$yellow" "$off"
 printf '%sNew versions install from inside the app (Settings > Updates, or it offers them). Nothing to do for that.%s\n' "$dim" "$off"
-printf '\nPress Return to close.\n'
-read -r _
+pause
