@@ -104,7 +104,12 @@ rm -f "$OUT/$NAME.zip" "$OUT/update-manifest.json"
 /usr/bin/ditto -c -k --sequesterRsrc "$STAGE" "$OUT/$NAME.zip"
 
 echo "==> manifest (the updater refuses a release without these checksums)"
-printf 'dummy setup exe (mac-only share build)\n' > "$OUT/Creatorize-Suite-Setup-$VER.exe"
+# if build-win.sh already put a real Setup.exe of this version here, keep it — do not clobber it with a dummy
+if [ -s "$OUT/Creatorize-Suite-Setup-$VER.exe" ] && [ "$(wc -c < "$OUT/Creatorize-Suite-Setup-$VER.exe")" -gt 1000 ]; then
+  echo "    keeping the Windows installer already in dist"
+else
+  printf 'dummy setup exe (mac-only share build)\n' > "$OUT/Creatorize-Suite-Setup-$VER.exe"
+fi
 node -e '
 const { createHash } = require("node:crypto"), { readFileSync, writeFileSync, statSync, readdirSync } = require("node:fs");
 const [dir, ver] = process.argv.slice(1);
