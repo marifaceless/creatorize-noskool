@@ -34,6 +34,9 @@ chmod -R u+w "$APP"
 VER=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Contents/Info.plist")
 NAME="Creatorize-Suite-$VER-mac-arm64"
 [ "$(uname -m)" = "arm64" ] || { echo "build on an Apple Silicon Mac (the bundle is arm64)"; exit 1; }
+for f in entitlements.plist apply.mjs "installer/Install Creatorize Suite.command" installer/README.txt; do
+  [ -f "$HERE/$f" ] || { echo "missing $f next to build.sh (clone the repo, do not copy build.sh alone)"; exit 1; }
+done
 echo "    version $VER, updates $([ "$UPDATES" = 1 ] && echo on || echo off)"
 
 echo "==> extract app.asar"
