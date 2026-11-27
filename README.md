@@ -3,13 +3,20 @@
 A patched build of [Creatorize Suite](https://www.skool.com/creatorize) that starts straight to Home
 with Premium unlocked, and never asks for a Skool account.
 
+| platform | install | updates |
+|---|---|---|
+| macOS, Apple Silicon | one-liner below, or the zip + `Install Creatorize Suite.command` | automatic |
+| macOS, Intel | same, it picks the x64 build | automatic |
+| Windows 10/11 x64 | `Creatorize-Suite-Setup-<v>.exe` from the release (unsigned: More info → Run anyway) | automatic |
+| Linux | — | the app itself has no Linux build |
+
 - The **app** makes the videos with your own Claude Code login. That sign-in stays: Home → Connect Claude.
 - Everything Premium is on: Routines, custom styles, characters designed with Claude, 4K, other languages, unlimited exports.
 - No Skool window, no membership check, no licence server.
 - Updates: this build checks **this repo's releases** and installs a new version itself. See *Updates* below.
 - Personal share build, not affiliated with Creatorize. Not signed with an Apple Developer ID.
 
-## Install
+## Install (macOS)
 
 One line in Terminal:
 
@@ -21,7 +28,8 @@ It downloads the newest release, checks it against the release's sha256, and ins
 (Mac password if it asks). Or by hand: Assets → `Creatorize-Suite-…-mac-arm64.zip` → unzip →
 `Install Creatorize Suite.command` → if macOS complains once: Done → Privacy & Security → Open Anyway.
 
-Requirements: macOS 12+, Apple Silicon, internet, your own Claude account.
+Requirements: macOS 12+ or Windows 10/11, internet, your own Claude account. Windows needs nothing
+else; on macOS you also need git/ffmpeg/Python, which the app installs and checks for.
 
 ## Updates
 
