@@ -97,6 +97,7 @@ writeFileSync(p, JSON.stringify(j, null, 2) + "\n");
   || { echo "electron-builder failed (last lines):"; tail -6 "$EB/eb.log"; echo "— publish the portable zip + latest.yml anyway (Windows friends then update by hand)"; }
 SETUP="$EB/dist/Creatorize-Suite-Setup-$VER.exe"
 [ -f "$SETUP" ] || { echo "no Setup.exe was built"; exit 1; }
+cp "$SETUP" "$OUT/Creatorize-Suite-Setup-$VER.exe"
 
 echo "==> zip + latest.yml + manifest"
 mkdir -p "$OUT"
