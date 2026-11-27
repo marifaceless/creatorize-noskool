@@ -32,8 +32,14 @@ echo "==> copy the app"
 /usr/bin/ditto "$SRC" "$APP"
 chmod -R u+w "$APP"
 VER=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Contents/Info.plist")
-NAME="Creatorize-Suite-$VER-mac-arm64"
-[ "$(uname -m)" = "arm64" ] || { echo "build on an Apple Silicon Mac (the bundle is arm64)"; exit 1; }
+BIN="$APP/Contents/MacOS/Creatorize Suite"
+ARCH=$(/usr/bin/lipo -archs "$BIN" 2>/dev/null | /usr/bin/awk '{print $1}')
+case "$ARCH" in
+  arm64|x86_64) [ "$ARCH" = "x86_64" ] && ARCH=x64 ;;
+  *) echo "cannot tell the app's CPU (lipo said '$ARCH'); pass an arm64 or x64 .app"; exit 1 ;;
+esac
+NAME="Creatorize-Suite-$VER-mac-$ARCH"
+echo "    arch $ARCH"
 for f in entitlements.plist apply.mjs "installer/Install Creatorize Suite.command" installer/README.txt; do
   [ -f "$HERE/$f" ] || { echo "missing $f next to build.sh (clone the repo, do not copy build.sh alone)"; exit 1; }
 done
