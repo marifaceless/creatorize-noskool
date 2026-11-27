@@ -1,0 +1,13 @@
+{
+  "name": "creatorize-suite",
+  "productName": "Creatorize Suite",
+  "description": "Creatorize Suite (no-Skool share build)",
+  "author": "Creatorize",
+  "build": {
+    "appId": "com.creatorize.suite",
+    "directories": { "output": "dist" },
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "icon.ico", "signAndEditExecutable": false, "artifactName": "Creatorize-Suite-${version}-win-${arch}.${ext}" },
+    "nsis": { "oneClick": true, "perMachine": false, "allowToChangeInstallationDirectory": false, "deleteAppDataOnUninstall": false, "artifactName": "Creatorize-Suite-Setup-${version}.${ext}" },
+    "npmRebuild": false
+  }
+}
