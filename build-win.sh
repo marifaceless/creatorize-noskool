@@ -120,6 +120,21 @@ const b64 = createHash("sha512").update(readFileSync(exe)).digest("base64");
 writeFileSync(`${out}/latest.yml`, `version: ${ver}\nfiles:\n  - url: Creatorize-Suite-Setup-${ver}.exe\n    sha512: ${b64}\npath: Creatorize-Suite-Setup-${ver}.exe\nsha512: ${b64}\nreleaseDate: \x27${new Date().toISOString()}\x27\n`);
 ' "$OUT" "$VER"
 
+echo "==> merge into dist/update-manifest.json (keeps the mac entries of the same version)"
+node -e '
+const { createHash } = require("node:crypto"), { readFileSync, writeFileSync, existsSync, statSync } = require("node:fs");
+const [out, ver] = process.argv.slice(1);
+const p = `${out}/update-manifest.json`;
+const m = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { version: ver, assets: {} };
+if (m.version !== ver) { m.version = ver; m.assets = {}; }
+for (const f of ["Creatorize-Suite-" + ver + "-win-x64.zip", "Creatorize-Suite-Setup-" + ver + ".exe"]) {
+  const fp = `${out}/${f}`;
+  m.assets[f] = { size: statSync(fp).size, sha256: createHash("sha256").update(readFileSync(fp)).digest("hex") };
+}
+writeFileSync(p, JSON.stringify(m, null, 1));
+console.log(`    assets in manifest: ${Object.keys(m.assets).length}`);
+' "$OUT" "$VER"
+
 echo
 echo "done. upload alongside the mac assets of the same release:"
 echo "  gh release upload v$VER -R $REPO_SLUG --clobber \\"
