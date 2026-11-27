@@ -31,6 +31,12 @@ It downloads the newest release, checks it against the release's sha256, and ins
 Requirements: macOS 12+ or Windows 10/11, internet, your own Claude account. Windows needs nothing
 else; on macOS you also need git/ffmpeg/Python, which the app installs and checks for.
 
+## Is this legal? Will it be taken down?
+
+It is an unofficial, non-commercial, personal share: his installers, one documented change, credited,
+nothing sold, nothing advertised. See **[LEGAL.md](LEGAL.md)**. If the author ever asks for it to
+come down, it comes down — and everyone keeps the version they already have.
+
 ## Updates
 
 Automatic and hands-off, like any normal app: the app checks here every 6 hours, downloads a new version,
