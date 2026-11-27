@@ -1,4 +1,4 @@
-# Creatorize Suite without the Skool login (macOS, Apple Silicon)
+# Creatorize Suite without the Skool login (macOS + Windows)
 
 A patched build of [Creatorize Suite](https://www.skool.com/creatorize) that starts straight to Home
 with Premium unlocked, and never asks for a Skool account.
@@ -14,7 +14,7 @@ with Premium unlocked, and never asks for a Skool account.
 - Everything Premium is on: Routines, custom styles, characters designed with Claude, 4K, other languages, unlimited exports.
 - No Skool window, no membership check, no licence server.
 - Updates: this build checks **this repo's releases** and installs a new version itself. See *Updates* below.
-- Personal share build, not affiliated with Creatorize. Not signed with an Apple Developer ID.
+- Personal share build, not affiliated with Creatorize. Not signed with an Apple Developer ID (macOS: right-click > Open once; Windows: More info > Run anyway).
 
 ## Install (macOS)
 
