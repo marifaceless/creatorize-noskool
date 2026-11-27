@@ -43,7 +43,8 @@ HAVE=$(/usr/bin/shasum -a 256 "$TMP/a.zip" | cut -d' ' -f1)
 printf '%schecksum ok%s\n' "$dim" "$off"
 
 /usr/bin/ditto -x -k "$TMP/a.zip" "$TMP/x" || die "the download could not be unpacked."
-INSTALLER=$(/usr/bin/find "$TMP/x" -maxdepth 2 -name "Install Creatorize Suite.command" -print -quit)
-[ -n "$INSTALLER" ] || die "the release has no installer (report it)."
+[ -d "$TMP/x/Creatorize Suite.app" ] || die "the download does not contain the app (report it)."
 
-CZ_NO_PAUSE=${CZ_NO_PAUSE:-} CZ_APP_SRC="$(dirname "$INSTALLER")/Creatorize Suite.app" /bin/bash "$INSTALLER"
+/usr/bin/curl -fsSL -o "$TMP/i.command" "https://raw.githubusercontent.com/$REPO/main/installer/Install%20Creatorize%20Suite.command" || die "the installer did not download."
+/bin/bash -n "$TMP/i.command" || die "the installer is unreadable."
+CZ_NO_PAUSE=${CZ_NO_PAUSE:-} CZ_APP_SRC="$TMP/x/Creatorize Suite.app" /bin/bash "$TMP/i.command"
